@@ -5,29 +5,30 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 
+
 @Component({
-  selector: 'app-signup',
+  selector: 'app-signin',
   standalone: true,
   imports: [FormsModule, NgIf, InputTextModule, PasswordModule, ButtonModule],
   template: `
     <div class="flex items-center justify-center h-screen bg-gray-200">
       <form
-        #signUpForm="ngForm"
-        (ngSubmit)="onSubmit(signUpForm)"
-        class="p-8 bg-white rounded shadow-md lg:w-1/3 md:w-1/2 w-full mx-4"
-      >
-        <h1 class="text-2xl font-bold mb-5">Sign Up</h1>
+        #signInForm="ngForm"
+        (ngSubmit)="onSubmit(signInForm)"
+        class="p-8 bg-white rounded shadow-md lg:w-1/3 md:w-1/2 w-full mx-4">
+        <h1 class="text-2xl font-bold mb-5">Sign In</h1>
         <input
           pInputText
-          [(ngModel)]="user.username"
-          #username="ngModel"
-          name="username"
+          [(ngModel)]="user.email"
+          #email="ngModel"
+          name="email"
+          type="email"
           required
-          placeholder="Username"
+          placeholder="Email"
           class="!mb-3 w-full"
         />
-        <div *ngIf="username.invalid && username.touched" class="text-red-500 mb-3">
-          Username is required
+        <div *ngIf="email.invalid && email.touched" class="text-red-500 mb-3">
+          Email is required
         </div>
         <p-password
           [(ngModel)]="user.password"
@@ -39,26 +40,13 @@ import { ButtonModule } from 'primeng/button';
           styleClass="w-full"
           inputStyleClass="!mb-3 w-full"
         ></p-password>
-        <div *ngIf="password.invalid && password.touched" class="text-red-500 mb-3">
+        <div *ngIf="password.invalid && password.touched" class="text-red-500 mb3">
           Password is required
-        </div>
-
-        <input
-          pInputText
-          [(ngModel)]="user.repetedPassword"
-          #repetedPassword="ngModel"
-          name="repeat password"
-          required
-          placeholder="Repeat Password"
-          class="!mb-3 w-full"
-        />
-        <div *ngIf="repetedPassword.invalid && repetedPassword.touched" class="text-red-500 mb-3">
-          Passwords must match
         </div>
         <button
           pButton
           type="submit"
-          label="Sign Up"
+          label="Sign In"
           class="w-full !mt-3 p-button"
         ></button>
       </form>
@@ -66,17 +54,16 @@ import { ButtonModule } from 'primeng/button';
   `,
   styles: [],
 })
-export class SignupComponent {
+export class SigninComponent {
   user = {
-    username: '',
+    email: '',
     password: '',
-    repetedPassword: '',
   };
 
   onSubmit(form: { valid: any }) {
     if (form.valid) {
       console.log(
-        'Username: ' + this.user.username + ' Password: ' + this.user.password
+        'email: ' + this.user.email + ' Password: ' + this.user.password
       );
       // Add your authentication logic here
     } else {
@@ -84,4 +71,3 @@ export class SignupComponent {
     }
   }
 }
-

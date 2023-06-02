@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-import { SigninComponent } from "./signin-page/signin.component";
-import { SignupComponent } from "./signup-page/signup.component";
-import { ForgotPasswordComponent } from "./signin-page/forgot-password.component";
-import { UploadComponent } from "./audio-list-page/upload.component";
-import { AudioListComponent } from "./audio-list-page/audio-list.component";
-import { UserSettingsComponent } from "./settings-page/user-settings.component";
+import { SigninComponent } from "./pages/signin-page/signin.component";
+import { SignupComponent } from "./pages/signup-page/signup.component";
+import { ForgotPasswordComponent } from "./pages/signin-page/forgot-password.component";
+import { UploadComponent } from "./pages/audio-list-page/upload.component";
+import { AudioListComponent } from "./pages/audio-list-page/audio-list.component";
+import { UserSettingsComponent } from "./pages/settings-page/user-settings.component";
 
 @Component({
     selector: 'app-root',
