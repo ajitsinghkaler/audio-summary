@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-
+import { APPWRITE_ACCOUNT } from 'src/app/helpers/client';
 
 @Component({
   selector: 'app-signin',
@@ -65,6 +65,15 @@ export class SigninComponent {
       console.log(
         'email: ' + this.user.email + ' Password: ' + this.user.password
       );
+      APPWRITE_ACCOUNT.createEmailSession(this.user.email, this.user.password).then(
+        (response) => {
+          console.log(response);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+
       // Add your authentication logic here
     } else {
       console.log('Form not valid');

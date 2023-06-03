@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { NgIf } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
+import { APPWRITE_ACCOUNT } from 'src/app/helpers/client';
+import { ID } from 'appwrite';
 
 @Component({
   selector: 'app-signup',
@@ -52,7 +54,10 @@ import { ButtonModule } from 'primeng/button';
           styleClass="w-full"
           inputStyleClass="!mb-3 w-full"
         ></p-password>
-        <div *ngIf="password.invalid && password.touched" class="text-red-500 mb-3">
+        <div
+          *ngIf="password.invalid && password.touched"
+          class="text-red-500 mb-3"
+        >
           Password is required
         </div>
 
@@ -62,10 +67,14 @@ import { ButtonModule } from 'primeng/button';
           #repetedPassword="ngModel"
           name="repeat password"
           required
+          type="password"
           placeholder="Repeat Password"
           class="!mb-3 w-full"
         />
-        <div *ngIf="repetedPassword.invalid && repetedPassword.touched" class="text-red-500 mb-3">
+        <div
+          *ngIf="repetedPassword.invalid && repetedPassword.touched"
+          class="text-red-500 mb-3"
+        >
           Passwords must match
         </div>
         <button
@@ -87,15 +96,27 @@ export class SignupComponent {
     repetedPassword: '',
   };
 
-  onSubmit(form: { valid: any }) {
+  onSubmit(form: NgForm) {
     if (form.valid) {
       console.log(
         'email: ' + this.user.email + ' Password: ' + this.user.password
       );
+      console.log(form.value);
+      APPWRITE_ACCOUNT.create(
+        ID.unique(),
+        this.user.email,
+        this.user.password,
+        this.user.name
+      )
+        .then((response) =>
+          APPWRITE_ACCOUNT.createVerification('http://localhost:4200')
+        )
+        .catch((error) => {
+          console.log(error);
+        });
       // Add your authentication logic here
     } else {
       console.log('Form not valid');
     }
   }
 }
-
