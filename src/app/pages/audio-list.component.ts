@@ -1,12 +1,33 @@
 import { Component } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
+import { DialogModule } from 'primeng/dialog';
+import { UploadComponent } from '../components/upload.component';
+import { APPWRITE } from '../helpers/appwrite';
 
 @Component({
   selector: 'app-audio-list',
   standalone: true,
-  imports: [ButtonModule, TableModule],
+  imports: [ButtonModule, TableModule, DialogModule, UploadComponent],
   template: `
+    <button
+      pButton
+      pRipple
+      (click)="visible = true"
+      icon="pi pi-external-link"
+      label="Upload"
+    ></button>
+    <p-dialog
+      header="Upload your audio"
+      [(visible)]="visible"
+      [modal]="true"
+      [style]="{ width: '50vw' }"
+      [draggable]="false"
+      [resizable]="false"
+      [dismissableMask]="true"
+    >
+      <app-upload/>
+    </p-dialog>
     <div class="card">
       <p-table [value]="products" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template pTemplate="header">
@@ -23,7 +44,7 @@ import { TableModule } from 'primeng/table';
             <td>{{ product.name }}</td>
             <td>{{ product.category }}</td>
             <td>
-              <p-button styleClass="p-button-danger" class="ml-2"
+              <p-button (click)="deleteFile()" styleClass="p-button-danger" class="ml-2"
                 ><img src="assets/delete.svg"
               /></p-button>
             </td>
@@ -35,6 +56,7 @@ import { TableModule } from 'primeng/table';
   styles: [],
 })
 export class AudioListComponent {
+  visible: boolean = false;
   products = [
     {
       id: '1000',
@@ -49,4 +71,7 @@ export class AudioListComponent {
       rating: 5,
     },
   ];
+  async deleteFile() {
+    await APPWRITE.storage.deleteFile(APPWRITE.bucketId,"647b20eb961c5b7e40ee");
+  }
 }

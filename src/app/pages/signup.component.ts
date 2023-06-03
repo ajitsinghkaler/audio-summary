@@ -4,7 +4,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-import { APPWRITE_ACCOUNT } from 'src/app/helpers/client';
+import { APPWRITE } from 'src/app/helpers/appwrite';
 import { ID } from 'appwrite';
 
 @Component({
@@ -102,14 +102,14 @@ export class SignupComponent {
         'email: ' + this.user.email + ' Password: ' + this.user.password
       );
       console.log(form.value);
-      APPWRITE_ACCOUNT.create(
+      APPWRITE.account.create(
         ID.unique(),
         this.user.email,
         this.user.password,
         this.user.name
       )
         .then((response) =>
-          APPWRITE_ACCOUNT.createVerification('http://localhost:4200')
+          APPWRITE.account.createVerification('http://localhost:4200')
         )
         .catch((error) => {
           console.log(error);

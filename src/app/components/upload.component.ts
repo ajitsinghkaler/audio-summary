@@ -1,15 +1,19 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FileUploadModule } from 'primeng/fileupload';
+import { APPWRITE } from '../helpers/appwrite';
+import { ID } from 'appwrite';
+import { createDocument } from '../permission/document-create.permissions';
+import { getCurrentUser } from '../helpers/get-loggedin-user';
 
 @Component({
   selector: 'app-upload',
   standalone: true,
   imports: [FileUploadModule, HttpClientModule],
-  providers:[HttpClient],
+  providers: [HttpClient],
   template: `
-   <div class="flex items-center justify-center h-screen bg-gray-200">
-   <div class="p-8 bg-white rounded shadow-md lg:w-1/3 md:w-1/2 w-full mx-4">
+    <!-- <div class="flex items-center justify-center h-screen bg-gray-200"> -->
+    <div class="bg-white rounded">
       <div class="flex items-center justify-center w-full">
         <label
           for="dropzone-file"
@@ -41,27 +45,36 @@ import { FileUploadModule } from 'primeng/fileupload';
             type="file"
             class="hidden"
             (change)="uploadFiles($event)"
-            multiple
           />
         </label>
       </div>
     </div>
-</div>
-
+    <!-- </div> -->
   `,
-  styles: [
-  ]
+  styles: [],
 })
 export class UploadComponent {
-  uploadFiles(event: Event) {
+  async uploadFiles(event: Event) {
     const target = event.target as HTMLInputElement;
-    if(!target.files) return
+    if (!target.files) return;
     const files = target.files;
-    const formData = new FormData();
-
-    for (const file of files) {
-      formData.append('file', file);
+    const currentUser = await getCurrentUser.catch((error) => console.log(error));
+    console.log(currentUser);
+    // debugger
+    if (currentUser) {
+      APPWRITE.storage.createFile(
+        APPWRITE.bucketId,
+        ID.unique(),
+        files[0],
+        createDocument(currentUser.$id)
+      ).then(
+        (response) => {
+          console.log(response);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
     }
-    // this.uploadFileService.uploadFile(formData).subscribe();
   }
 }
