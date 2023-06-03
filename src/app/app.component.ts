@@ -12,14 +12,8 @@ import { UserSettingsComponent } from "./pages/user-settings.component";
     standalone: true,
     template: `
   <router-outlet></router-outlet>
-  <app-signin/>  
-  <app-signup/>
-  <app-forgot-password/>
-  <app-upload/>
-  <app-audio-list/>
-  <app-user-settings/>
   `,
-    imports: [RouterOutlet, SigninComponent, SignupComponent, ForgotPasswordComponent, UploadComponent, AudioListComponent, UserSettingsComponent]
+    imports: [RouterOutlet]
 })
 export class AppComponent {
   title = 'audio-summary';
