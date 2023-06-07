@@ -1,16 +1,13 @@
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { FileUploadModule } from 'primeng/fileupload';
-import { APPWRITE } from '../helpers/appwrite';
-import { ID } from 'appwrite';
-import { createDocument } from '../permission/document-create.permissions';
-import { getCurrentUser } from '../helpers/get-loggedin-user';
+import { UploadFileEventService } from '../services/upload-file-event.service';
 
 @Component({
   selector: 'app-upload',
   standalone: true,
   imports: [FileUploadModule, HttpClientModule],
-  providers: [HttpClient],
+  providers: [HttpClient, UploadFileEventService],
   template: `
     <!-- <div class="flex items-center justify-center h-screen bg-gray-200"> -->
     <div class="bg-white rounded">
@@ -53,28 +50,17 @@ import { getCurrentUser } from '../helpers/get-loggedin-user';
   `,
   styles: [],
 })
-export class UploadComponent {
-  async uploadFiles(event: Event) {
+export class UploadComponent implements OnDestroy {
+  uploadFileService = inject(UploadFileEventService);
+
+  uploadFiles(event: Event) {
     const target = event.target as HTMLInputElement;
     if (!target.files) return;
     const files = target.files;
-    const currentUser = await getCurrentUser.catch((error) => console.log(error));
-    console.log(currentUser);
-    // debugger
-    if (currentUser) {
-      APPWRITE.storage.createFile(
-        APPWRITE.bucketId,
-        ID.unique(),
-        files[0],
-        createDocument(currentUser.$id)
-      ).then(
-        (response) => {
-          console.log(response);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    }
+    this.uploadFileService.uploadFile(files);
+  }
+
+  ngOnDestroy() {
+    this.uploadFileService.uploadEvent();
   }
 }

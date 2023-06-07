@@ -4,11 +4,13 @@ import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { UploadComponent } from '../components/upload.component';
 import { APPWRITE } from '../helpers/appwrite';
+import { AsyncPipe } from '@angular/common';
+import { DateagoPipe } from '../helpers/dateago.pipe';
 
 @Component({
   selector: 'app-audio-list',
   standalone: true,
-  imports: [ButtonModule, TableModule, DialogModule, UploadComponent],
+  imports: [ButtonModule, TableModule, DialogModule, UploadComponent, AsyncPipe, DateagoPipe],
   template: `
     <button
       pButton
@@ -29,22 +31,22 @@ import { APPWRITE } from '../helpers/appwrite';
       <app-upload/>
     </p-dialog>
     <div class="card">
-      <p-table [value]="products" [tableStyle]="{ 'min-width': '50rem' }">
+      <p-table [value]="$any((files|async)?.files)" [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template pTemplate="header">
           <tr>
             <th>Name</th>
-            <th>Summary</th>
+            <!-- <th>Summary</th> -->
             <th>Uploaded</th>
             <th>Action</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-product>
           <tr>
-            <td>{{ product.code }}</td>
             <td>{{ product.name }}</td>
-            <td>{{ product.category }}</td>
+            <!-- <td>{{ product.name }}</td> -->
+            <td>{{ product.$updatedAt|dateago }}</td>
             <td>
-              <p-button (click)="deleteFile()" styleClass="p-button-danger" class="ml-2"
+              <p-button (click)="deleteFile(product.$id)" styleClass="p-button-danger" class="ml-2"
                 ><img src="assets/delete.svg"
               /></p-button>
             </td>
@@ -57,21 +59,8 @@ import { APPWRITE } from '../helpers/appwrite';
 })
 export class AudioListComponent {
   visible: boolean = false;
-  products = [
-    {
-      id: '1000',
-      code: 'f230fh0g3',
-      name: 'Bamboo Watch',
-      description: 'Product Description',
-      image: 'bamboo-watch.jpg',
-      price: 65,
-      category: 'Accessories',
-      quantity: 24,
-      inventoryStatus: 'INSTOCK',
-      rating: 5,
-    },
-  ];
-  async deleteFile() {
-    await APPWRITE.storage.deleteFile(APPWRITE.bucketId,"647b20eb961c5b7e40ee");
+  files = APPWRITE.storage.listFiles(APPWRITE.bucketId);
+  async deleteFile(id: string) {
+    await APPWRITE.storage.deleteFile(APPWRITE.bucketId,id);
   }
 }

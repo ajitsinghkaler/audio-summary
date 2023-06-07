@@ -2,20 +2,20 @@ import { Component } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { APPWRITE } from 'src/app/helpers/appwrite';
 
 @Component({
   selector: 'app-signin',
   standalone: true,
-  imports: [FormsModule, NgIf, InputTextModule, PasswordModule, ButtonModule],
+  imports: [FormsModule, NgIf, InputTextModule, ButtonModule],
   template: `
     <div class="flex items-center justify-center h-screen bg-gray-200">
       <form
         #signInForm="ngForm"
         (ngSubmit)="onSubmit(signInForm)"
-        class="p-8 bg-white rounded shadow-md lg:w-1/3 md:w-1/2 w-full mx-4">
+        class="p-8 bg-white rounded shadow-md lg:w-1/3 md:w-1/2 w-full mx-4"
+      >
         <h1 class="text-2xl font-bold mb-5">Sign In</h1>
         <input
           pInputText
@@ -30,17 +30,20 @@ import { APPWRITE } from 'src/app/helpers/appwrite';
         <div *ngIf="email.invalid && email.touched" class="text-red-500 mb-3">
           Email is required
         </div>
-        <p-password
+        <input
+          pInputText
           [(ngModel)]="user.password"
           #password="ngModel"
           name="password"
           required
           placeholder="Password"
-          class="block w-full"
-          styleClass="w-full"
-          inputStyleClass="!mb-3 w-full"
-        ></p-password>
-        <div *ngIf="password.invalid && password.touched" class="text-red-500 mb3">
+          class="!mb-3 w-full"
+          type="password"
+        />
+        <div
+          *ngIf="password.invalid && password.touched"
+          class="text-red-500 mb3"
+        >
           Password is required
         </div>
         <button
@@ -65,14 +68,16 @@ export class SigninComponent {
       console.log(
         'email: ' + this.user.email + ' Password: ' + this.user.password
       );
-      APPWRITE.account.createEmailSession(this.user.email, this.user.password).then(
-        (response) => {
-          console.log(response);
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
+      APPWRITE.account
+        .createEmailSession(this.user.email, this.user.password)
+        .then(
+          (response) => {
+            console.log(response);
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
 
       // Add your authentication logic here
     } else {
