@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
+import { APPWRITE } from '../helpers/appwrite';
+import { environment } from 'src/environments/environment';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-forgot-password',
@@ -21,6 +24,7 @@ import { ButtonModule } from 'primeng/button';
           [(ngModel)]="user.email"
           #email="ngModel"
           name="email"
+          pattern="[a-z0-9._]+@[a-z0-9.-]+.[a-z]{2,10}"
           required
           placeholder="Email"
           class="!mb-3 w-full"
@@ -43,11 +47,17 @@ export class ForgotPasswordComponent {
   user = {
     email: '',
   };
+  toastr = inject(ToastrService);
+
 
   onSubmit(form: { valid: any }) {
     if (form.valid) {
-      console.log('Email: ' + this.user.email);
-      // Add your password reset logic here
+      APPWRITE.account.createRecovery(this.user.email, `${environment.DOMAIN}/update-password`).then(()=>{
+        this.toastr.success("Password recovery email success fully sent to your email address");
+      }).catch((error) => {
+        this.toastr.error("An error occured while sending the recovery email");
+
+      })
     } else {
       console.log('Form not valid');
     }

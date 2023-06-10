@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
@@ -6,11 +6,21 @@ import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { APPWRITE } from 'src/app/helpers/appwrite';
 import { ID } from 'appwrite';
+import { ToastrService } from 'ngx-toastr';
+import { RouterLink } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [FormsModule, NgIf, InputTextModule, PasswordModule, ButtonModule],
+  imports: [
+    FormsModule,
+    NgIf,
+    InputTextModule,
+    PasswordModule,
+    ButtonModule,
+    RouterLink,
+  ],
   template: `
     <div class="flex items-center justify-center h-screen bg-gray-200">
       <form
@@ -53,7 +63,18 @@ import { ID } from 'appwrite';
           class="block w-full"
           styleClass="w-full"
           inputStyleClass="!mb-3 w-full"
-        ></p-password>
+          minlength="8"
+        >
+          <ng-template pTemplate="header">
+            <h6>Pick a password</h6>
+          </ng-template>
+          <ng-template pTemplate="footer">
+            <p class="mt-2">Requirements</p>
+            <ul class="pl-2 ml-2 mt-0" style="line-height: 1.5">
+              <li>Minimum 8 characters</li>
+            </ul>
+          </ng-template></p-password
+        >
         <div
           *ngIf="password.invalid && password.touched"
           class="text-red-500 mb-3"
@@ -62,17 +83,21 @@ import { ID } from 'appwrite';
         </div>
 
         <input
-          pInputText
+          pPassword
           [(ngModel)]="user.repetedPassword"
           #repetedPassword="ngModel"
           name="repeat password"
           required
+          [feedback]="false"
           type="password"
           placeholder="Repeat Password"
           class="!mb-3 w-full"
         />
         <div
-          *ngIf="repetedPassword.invalid && repetedPassword.touched"
+          *ngIf="
+            (repetedPassword.invalid && repetedPassword.touched) ||
+            (user.password !== user.repetedPassword && repetedPassword.touched)
+          "
           class="text-red-500 mb-3"
         >
           Passwords must match
@@ -83,6 +108,10 @@ import { ID } from 'appwrite';
           label="Sign Up"
           class="w-full !mt-3 p-button"
         ></button>
+        <div class="mt-4 text-center">
+          Already a member?
+          <a class="text-blue-500" routerLink="/signin">Sign in</a>
+        </div>
       </form>
     </div>
   `,
@@ -95,24 +124,38 @@ export class SignupComponent {
     password: '',
     repetedPassword: '',
   };
-
+  toastr = inject(ToastrService);
+  
   onSubmit(form: NgForm) {
+    form.form.markAllAsTouched();
+    if (this.user.password !== this.user.repetedPassword) {
+      return;
+    }
     if (form.valid) {
-      console.log(
-        'email: ' + this.user.email + ' Password: ' + this.user.password
-      );
-      console.log(form.value);
-      APPWRITE.account.create(
-        ID.unique(),
-        this.user.email,
-        this.user.password,
-        this.user.name
-      )
-        .then((response) =>
-          APPWRITE.account.createVerification('http://localhost:4200')
+      APPWRITE.account
+        .create(
+          ID.unique(),
+          this.user.email,
+          this.user.password,
+          this.user.name
+        )
+        .then(() =>
+          APPWRITE.account.createEmailSession(
+            this.user.email,
+            this.user.password
+          )
+        )
+        .then(() =>
+          APPWRITE.account.createVerification(`${environment.DOMAIN}/verify`)
+        )
+        .then(() =>
+          this.toastr.success(
+            'Verification email sent to your email please verify your account',
+            'Success'
+          )
         )
         .catch((error) => {
-          console.log(error);
+          this.toastr.error('Could not create user', 'Error');
         });
       // Add your authentication logic here
     } else {

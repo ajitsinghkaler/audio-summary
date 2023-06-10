@@ -1,14 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { APPWRITE } from 'src/app/helpers/appwrite';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-signin',
   standalone: true,
-  imports: [FormsModule, NgIf, InputTextModule, ButtonModule],
+  imports: [FormsModule, NgIf, InputTextModule, ButtonModule, RouterLink],
   template: `
     <div class="flex items-center justify-center h-screen bg-gray-200">
       <form
@@ -23,6 +24,7 @@ import { APPWRITE } from 'src/app/helpers/appwrite';
           #email="ngModel"
           name="email"
           type="email"
+          pattern="[a-z0-9._]+@[a-z0-9.-]+.[a-z]{2,10}"
           required
           placeholder="Email"
           class="!mb-3 w-full"
@@ -46,12 +48,22 @@ import { APPWRITE } from 'src/app/helpers/appwrite';
         >
           Password is required
         </div>
+
         <button
           pButton
           type="submit"
           label="Sign In"
           class="w-full !mt-3 p-button"
         ></button>
+        <div class="mt-4 text-center">
+          Not a member?
+          <a class="text-blue-500" routerLink="/signup">Sign up</a>
+        </div>
+        <div class="text-center mt-4">
+          <a class="text-blue-500" routerLink="/forgot-password"
+            >Forgot Password</a
+          >
+        </div>
       </form>
     </div>
   `,
@@ -62,17 +74,16 @@ export class SigninComponent {
     email: '',
     password: '',
   };
+  router = inject(Router)
 
-  onSubmit(form: { valid: any }) {
+  onSubmit(form: { valid: any; form: { markAllAsTouched: () => void } }) {
+    form.form.markAllAsTouched();
     if (form.valid) {
-      console.log(
-        'email: ' + this.user.email + ' Password: ' + this.user.password
-      );
       APPWRITE.account
         .createEmailSession(this.user.email, this.user.password)
         .then(
           (response) => {
-            console.log(response);
+            this.router.navigate(['/app/audio-list'])
           },
           (error) => {
             console.log(error);

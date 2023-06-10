@@ -23,6 +23,7 @@
     "@angular/router": "^16.0.0",
     "appwrite": "^11.0.0",
     "dayjs": "^1.11.8",
+    "ngx-toastr": "^17.0.2",
     "primeng": "^15.4.1",
     "rxjs": "~7.8.0",
     "source-map-explorer": "^2.5.3",

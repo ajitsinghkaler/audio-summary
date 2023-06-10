@@ -36,8 +36,6 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "sourceMap": true,
-            "namedChunks": true,
             "outputPath": "dist/audio-summary",
             "index": "src/index.html",
             "main": "src/main.ts",
