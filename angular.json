@@ -27,6 +27,10 @@
         },
         "@schematics/angular:service": {
           "skipTests": true
+        },
+        "@schematics/angular:guard": {
+          "flat": true,
+          "skipTests": true
         }
       },
       "root": "",

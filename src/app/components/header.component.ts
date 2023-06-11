@@ -1,13 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { APPWRITE } from '../helpers/appwrite';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [NgIf],
+  imports: [NgIf, RouterLink],
   template: `
     <header class="bg-white dark:bg-gray-900">
       <nav
@@ -17,7 +17,7 @@ import { ToastrService } from 'ngx-toastr';
           <div>
             <a
               class="text-2xl font-bold text-gray-800 hover:text-gray-700 dark:text-white dark:hover:text-gray-300 lg:text-3xl"
-              href="#"
+              routerLink="/app/audio-list"
               >AudioSum</a
             >
           </div>
@@ -76,14 +76,19 @@ import { ToastrService } from 'ngx-toastr';
           <div class="flex flex-col space-y-4 lg:mt-0 lg:flex-row lg:space-y-0">
             <a
               class="text-gray-700 hover:text-blue-500 dark:text-gray-200 dark:hover:text-blue-400 lg:mx-6"
-              href="#"
+              routerLink="/app/audio-list"
               >Transcribe</a
             >
-            <div
+            <a
               class="text-gray-700 hover:text-blue-500 dark:text-gray-200 dark:hover:text-blue-400 lg:mx-6"
+              routerLink="/app/settings"
+              >Settings</a
+            >
+            <button (click)="logout()"
+              class="text-gray-700 hover:text-blue-500 dark:text-gray-200 dark:hover:text-blue-400 lg:mx-6 text-left"
             >
               Logout
-            </div>
+</button>
           </div>
         </div>
       </nav>
@@ -99,7 +104,7 @@ export class HeaderComponent {
   logout() {
     APPWRITE.account
       .deleteSession('current')
-      .then(() => this.router.navigate(['/login']))
+      .then(() => this.router.navigate(['/signin']))
       .catch(() => {
         this.toastr.error('An error occured while loggong out');
       });

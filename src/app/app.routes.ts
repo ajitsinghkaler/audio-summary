@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './gaurds/auth.guard';
 
 export const routes: Routes = [
   {
@@ -43,6 +44,7 @@ export const routes: Routes = [
       import('./components/logged-in.component').then(
         (m) => m.LoggedInComponent
       ),
+    canActivateChild: [authGuard],
     children: [
       {
         path: 'audio-list',
@@ -52,10 +54,10 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'summary-list',
+        path: 'summary/:id',
         loadComponent: () =>
-          import('./pages/summary-list.component').then(
-            (m) => m.SummaryListComponent
+          import('./pages/summary.component').then(
+            (m) => m.SummaryComponent
           ),
       },
       {

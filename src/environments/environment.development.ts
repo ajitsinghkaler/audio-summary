@@ -5,5 +5,5 @@ export const environment = {
     TRANSCRIBE_AUDIO_ID : "647dbe287c79429dd29f",
     APPWRITE_DATABASE_ID: "6480727290cc647ba516",
     APPWRITE_COLLECTION_ID: "648072baa716419d1600",
-    DOMAIN: "http://localhost:4200/",
+    DOMAIN: "http://localhost:4200",
 };

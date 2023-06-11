@@ -1,13 +1,13 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Component, OnDestroy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FileUploadModule } from 'primeng/fileupload';
 import { UploadFileEventService } from '../services/upload-file-event.service';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-upload',
   standalone: true,
-  imports: [FileUploadModule, HttpClientModule],
-  providers: [HttpClient, UploadFileEventService],
+  imports: [FileUploadModule, NgIf],
+  providers: [UploadFileEventService],
   template: `
     <!-- <div class="flex items-center justify-center h-screen bg-gray-200"> -->
     <div class="bg-white rounded">
@@ -35,6 +35,7 @@ import { UploadFileEventService } from '../services/upload-file-event.service';
               <span class="font-semibold">Click to upload</span> or drag and
               drop
             </p>
+            <p *ngIf="uploadFileService.uploading" class="text-xl text-gray-500">Uploading...</p>
             <!-- <p class="text-xs text-gray-500">PDF, DOC, TXT, HTML</p> -->
           </div>
           <input
@@ -50,17 +51,14 @@ import { UploadFileEventService } from '../services/upload-file-event.service';
   `,
   styles: [],
 })
-export class UploadComponent implements OnDestroy {
+export class UploadComponent {
   uploadFileService = inject(UploadFileEventService);
 
   uploadFiles(event: Event) {
+    this.uploadFileService.uploading = true;
     const target = event.target as HTMLInputElement;
     if (!target.files) return;
     const files = target.files;
     this.uploadFileService.uploadFile(files);
-  }
-
-  ngOnDestroy() {
-    this.uploadFileService.uploadEvent();
   }
 }
