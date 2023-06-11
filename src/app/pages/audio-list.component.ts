@@ -38,6 +38,7 @@ import { RouterLink } from '@angular/router';
         [(visible)]="visible"
         [modal]="true"
         [style]="{ width: '50vw' }"
+        [breakpoints]="{ '768px': '95vw' }"
         [draggable]="false"
         [resizable]="false"
         [dismissableMask]="true"

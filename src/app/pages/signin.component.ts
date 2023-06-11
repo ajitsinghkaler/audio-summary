@@ -74,7 +74,16 @@ export class SigninComponent {
     email: '',
     password: '',
   };
-  router = inject(Router)
+  router = inject(Router);
+
+  ngOnInit(): void {
+    APPWRITE.account
+      .getSession('current')
+      .then(() => this.router.navigate(['/app/audio-list']))
+      .catch(() => {
+        console.log('no session');
+      });
+  }
 
   onSubmit(form: { valid: any; form: { markAllAsTouched: () => void } }) {
     form.form.markAllAsTouched();
@@ -83,7 +92,7 @@ export class SigninComponent {
         .createEmailSession(this.user.email, this.user.password)
         .then(
           (response) => {
-            this.router.navigate(['/app/audio-list'])
+            this.router.navigate(['/app/audio-list']);
           },
           (error) => {
             console.log(error);

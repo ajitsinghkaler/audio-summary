@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FileUploadModule } from 'primeng/fileupload';
 import { UploadFileEventService } from '../services/upload-file-event.service';
 import { NgIf } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-upload',
@@ -11,7 +12,7 @@ import { NgIf } from '@angular/common';
   template: `
     <!-- <div class="flex items-center justify-center h-screen bg-gray-200"> -->
     <div class="bg-white rounded">
-      <div class="flex items-center justify-center w-full">
+      <form class="flex items-center justify-center w-full">
         <label
           for="dropzone-file"
           class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50"
@@ -35,17 +36,27 @@ import { NgIf } from '@angular/common';
               <span class="font-semibold">Click to upload</span> or drag and
               drop
             </p>
-            <p *ngIf="uploadFileService.uploading" class="text-xl text-gray-500">Uploading...</p>
+            <p class="text-xs text-gray-500">
+              File should be MP3, MP4, WAV, WEBM, M4A, MPEG, MPEG4 and less than 7MB
+            </p>
+            <p
+              *ngIf="uploadFileService.uploading"
+              class="text-xl text-gray-500"
+            >
+              Uploading...
+            </p>
             <!-- <p class="text-xs text-gray-500">PDF, DOC, TXT, HTML</p> -->
           </div>
           <input
             id="dropzone-file"
             type="file"
             class="hidden"
+            accept="audio/mp3, audio/mp4, audio/mpeg, audio/mpeg4-generic, audio/m4a, audio/wav, audio/webm"
+            maxlength="7340032"
             (change)="uploadFiles($event)"
           />
         </label>
-      </div>
+      </form>
     </div>
     <!-- </div> -->
   `,
@@ -53,12 +64,19 @@ import { NgIf } from '@angular/common';
 })
 export class UploadComponent {
   uploadFileService = inject(UploadFileEventService);
+  toastr = inject(ToastrService);
 
   uploadFiles(event: Event) {
     this.uploadFileService.uploading = true;
     const target = event.target as HTMLInputElement;
     if (!target.files) return;
     const files = target.files;
-    this.uploadFileService.uploadFile(files);
+    if (target.files[0].size < 7340032) {
+      this.uploadFileService.uploadFile(files);
+    } else {
+      this.toastr.error('File size should be less than 7mb');
+      this.uploadFileService.uploading = false;
+      return;
+    }
   }
 }

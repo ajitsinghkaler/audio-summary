@@ -1,6 +1,6 @@
 export const environment = {
     APPWRITE_PROJECT_ID:"647498409faf781b76d1",
-    APPWRITE_ENDPOINT:"https://cloud.appwrite.io/v1",
+    APPWRITE_ENDPOINT:"https://appwrite.aicygnus.com/v1",
     APPWRITE_BUCKET_ID:"647f338388aac4bf0b69",
     TRANSCRIBE_AUDIO_ID : "647dbe287c79429dd29f",
     APPWRITE_DATABASE_ID: "6480727290cc647ba516",
