@@ -24,14 +24,12 @@ import { RouterLink } from '@angular/router';
     <div class="container mx-auto">
       <div class="flex justify-between m-4 items-center">
         <h1 class="text-2xl font-bold">Files List</h1>
-        <button
-          pButton
+        <p-button
           pRipple
           (click)="visible = true"
-          icon="pi pi-external-link"
           label="Upload"
-          
-        ></button>
+          styleClass="p-button-outlined !px-7  !py-2"
+        ></p-button>
       </div>
       <p-dialog
         header="Upload your audio"
@@ -46,7 +44,7 @@ import { RouterLink } from '@angular/router';
       >
         <app-upload />
       </p-dialog>
-      <div class="card">
+      <div class="card rounded overflow-hidden drop-shadow">
         <p-table
           [value]="$any((files | async)?.files)"
           [tableStyle]="{ 'min-width': '50rem' }"
