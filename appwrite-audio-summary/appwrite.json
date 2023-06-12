@@ -1,0 +1,36 @@
+{
+    "projectId": "647498409faf781b76d1",
+    "projectName": "appwrite-hackathon",
+    "functions": [
+        {
+            "$id": "647dbe287c79429dd29f",
+            "name": "transcribeAudio",
+            "runtime": "python-3.9",
+            "path": "functions/transcribeAudio",
+            "entrypoint": "src/index.py",
+            "ignore": [
+                "__pypackages__"
+            ],
+            "execute": [
+                "users"
+            ],
+            "events": [],
+            "schedule": "",
+            "timeout": 300
+        },
+        {
+            "$id": "6485aad976ecc8b40374",
+            "name": "deleteFromDb",
+            "runtime": "python-3.9",
+            "path": "functions/deleteFromDb",
+            "entrypoint": "src/index.py",
+            "ignore": [
+                "__pypackages__"
+            ],
+            "execute": [],
+            "events": ["buckets.647f338388aac4bf0b69.files.*.delete"],
+            "schedule": "",
+            "timeout": 15
+        }
+    ]
+}
